@@ -13,7 +13,12 @@ from .services import evaluate_answer, generate_question
 
 def _api_error(error):
     message = str(error)
-    return Response({"detail": message if settings.DEBUG else "Не удалось получить ответ ИИ. Попробуйте ещё раз."}, status=status.HTTP_502_BAD_GATEWAY)
+    lowered = message.lower()
+    if "429" in lowered or "quota" in lowered or "rate" in lowered:
+        detail = "Помощник получил слишком много запросов. Подождите минуту и попробуйте снова."
+    else:
+        detail = "Не удалось связаться с помощником. Мы уже повторили запрос — попробуйте ещё раз через минуту."
+    return Response({"detail": detail}, status=status.HTTP_502_BAD_GATEWAY)
 
 @api_view(["POST"])
 @authentication_classes([TokenAuthentication])
