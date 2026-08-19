@@ -1,4 +1,3 @@
-from django.conf import settings
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.decorators import authentication_classes, permission_classes
@@ -63,7 +62,7 @@ def submit_answer(request, session_id):
 @permission_classes([IsAuthenticated])
 def history(request):
     rows = InterviewSession.objects.filter(user=request.user).exclude(answer="")[:50]
-    return Response([{"id": x.id, "role": x.role, "mode": x.mode, "question": x.question, "score": x.score, "feedback": x.feedback, "created_at": x.created_at} for x in rows])
+    return Response([{"id": x.id, "role": x.role, "mode": x.mode, "question": x.question, "score": x.score, "created_at": x.created_at} for x in rows])
 
 @api_view(["POST"])
 @permission_classes([AllowAny])
